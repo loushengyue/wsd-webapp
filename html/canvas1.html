@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            background-color: #CCCCCC;
+        }
+        #cavas{
+            background-color: #fff;
+            margin:50px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<canvas id="cavas">
+    您的浏览器老的掉牙，请更新浏览！
+</canvas>
+<script>
+    var cavas = document.getElementById('cavas');
+    cavas.width = 200;
+    cavas.height = 200;
+    var r = 100;
+    var w = 10;
+    var inter;
+    var ctx= cavas.getContext("2d");
+    ctx.translate(r, r);
+
+    drawCircle ();
+    drawHourPointer ();
+    drawMinPointer ();
+    drawHour (12);
+    drawMin (5);
+    drawSecond (15);
+    drawCenter ();
+    autoPlay ();
+
+    function autoPlay () {
+        if (inter) {
+            window.clearInterval(inter)
+        }
+        inter = setInterval(function () {
+            ctx.clearRect(-r, -r, 2*r, 2*r);
+            var times = new Date();
+            var _hour = times.getHours();
+            var _min = times.getMinutes();
+            var _sec = times.getSeconds();
+            drawCircle ();
+            drawHourPointer ();
+            drawMinPointer ();
+            drawHour (_hour);
+            drawMin (_min);
+            drawSecond (_sec);
+            drawCenter ();
+        }, 1000);
+    }
+    function drawCenter () {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2, false);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawSecond (sec) {
+        ctx.save();
+        ctx.beginPath();
+        var _deg = Math.PI * 2 / 60 * sec - Math.PI;
+        ctx.rotate(_deg);
+        ctx.moveTo(0, -20);
+        ctx.lineWidth = 1;
+        ctx.lineTo(0, r - 15);
+        ctx.strokeStyle = 'red';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawMin (min) {
+        ctx.save();
+        ctx.beginPath();
+        var _degs = Math.PI * 2 / 60 * min - Math.PI;
+        ctx.rotate(_degs);
+        ctx.moveTo(0, -15);
+        ctx.lineWidth = 3;
+        ctx.lineTo(0, r - 40);
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore()
+    }
+    function drawHour (hour) {
+        ctx.save();
+        ctx.beginPath();
+        var _deg = Math.PI * 2 / 12 * hour - Math.PI;
+        ctx.rotate(_deg);
+        ctx.moveTo(0, -10);
+        ctx.lineWidth = 6;
+        ctx.lineTo(0, r - 50);
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawMinPointer () {
+        ctx.save();
+        for (var m = 0; m < 60; m++) {
+            ctx.beginPath();
+            var _deg2 = Math.PI * 2 / 60 * m;
+            var _x2 = (r - 20) * Math.cos(_deg2);
+            var _y2 = (r - 20) * Math.sin(_deg2);
+            ctx.arc(_x2, _y2, 2, 0, Math.PI * 2, true);
+            if (m%5==0) {
+                ctx.fillStyle = 'black';
+            } else {
+                ctx.fillStyle = 'red';
+            }
+            ctx.fill();
+            ctx.closePath();
+        }
+        ctx.restore();
+    }
+    function drawHourPointer () {
+        ctx.save();
+        var hour = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
+        ctx.beginPath();
+        ctx.font = '18px arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (var i = 0, l = hour.length; i < l; i++) {
+            var _deg = Math.PI * 2 / 12 * i;
+            var _x = (r - 30) * Math.cos(_deg);
+            var _y = (r - 30) * Math.sin(_deg);
+            ctx.fillText(hour[i], _x, _y);
+        }
+        ctx.closePath();
+        ctx.restore();
+    }
+    function drawCircle () {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, r - w / 2, 0, Math.PI * 2, true);
+        ctx.lineWidth = w;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
+    }
+</script>
+</body>
+</html>

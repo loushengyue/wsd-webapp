@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        .box{
+            background-color: #CCCCCC;
+            overflow: hidden;
+            padding: 50px;
+        }
+        #canva{
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <canvas id="canva" width="200" height="200">
+        您的浏览器版本过老，请更新浏览器
+    </canvas>
+</div>
+<script>
+    var canva = document.getElementById('canva');
+    var c = canva.getContext('2d');
+    var w = canva.width;
+    var h = canva.height;
+    var r = w / 2;
+    var lw = 10;
+    var inter;
+
+    var now = new Date();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    c.translate(r, r);
+
+//    drawCircle ();
+//    drawHour ();
+//    drawMinute ();
+//    drawHourPointer ();
+//    drawMinutePointer ();
+//    drawSecondPointer ();
+//    drawCenterPointer ();
+    autoPlay ();
+
+    function autoPlay () {
+        if (inter) {
+            window.clearInterval(inter);
+        }
+        inter = setInterval(function () {
+            var now = new Date();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            var second = now.getSeconds();
+            c.clearRect(-r, -r, 2 * r, 2 * r);
+            drawCircle ();
+            drawHour ();
+            drawMinute ();
+            drawHourPointer (hour);
+            drawMinutePointer (minute);
+            drawSecondPointer (second);
+            drawCenterPointer ();
+            autoPlay ();
+        }, 1000);
+    }
+    function drawCenterPointer () {
+        c.save();
+        c.beginPath();
+        c.arc(0, 0, 5, 0, Math.PI * 2);
+        c.fillStyle = 'red';
+        c.fill();
+        c.closePath();
+        c.restore();
+    }
+    function drawSecondPointer (sec) {
+        c.save();
+        c.beginPath();
+        var _deg = Math.PI * 2 / 60 * sec;
+        c.rotate(_deg);
+        c.moveTo(0, 0);
+        c.lineTo(0, -(r - 20));
+        c.lineWidth = 2;
+        c.strokeStyle = 'red';
+        c.stroke();
+        c.closePath();
+        c.restore();
+    }
+    function drawMinutePointer (min) {
+        c.save();
+        c.beginPath();
+        var _deg = Math.PI * 2 / 60 * min;
+        c.rotate(_deg);
+        c.moveTo(0, 0);
+        c.lineTo(0, -(r - 30));
+        c.lineWidth = 4;
+        c.stroke();
+        c.closePath();
+        c.restore();
+    }
+    function drawHourPointer (hour) {
+        c.save();
+        c.beginPath();
+        var _deg = Math.PI * 2 / 12 * hour;
+        c.rotate(_deg);
+        c.moveTo(0, 0);
+        c.lineTo(0, -(r - 50));
+        c.lineWidth = 6;
+        c.stroke();
+        c.closePath();
+        c.restore();
+    }
+    function drawMinute () {
+        for (var i = 0; i < 60; i++) {
+            var _deg = Math.PI * 2 / 60 * i;
+            var _x = (r - 20) * Math.cos(_deg);
+            var _y = (r - 20) * Math.sin(_deg);
+            c.save();
+            c.beginPath();
+            c.arc(_x, _y, 2, 0, Math.PI * 2, true);
+            if (i%5 == 0) {
+                c.fillStyle = '#000';
+            } else {
+                c.fillStyle = '#ddd';
+            }
+            c.fill();
+            c.closePath();
+            c.restore();
+        }
+    }
+    function drawHour () {
+        var hour = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
+        for (var i = 0; i < 12; i++) {
+            var _deg = Math.PI * 2 / 12 * i;
+            var _x = (r - 35) * Math.cos(_deg);
+            var _y = (r - 35) * Math.sin(_deg);
+            c.save();
+            c.beginPath();
+            c.font = '18px Aria';
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText(hour[i], _x, _y);
+            c.closePath();
+            c.restore();
+        }
+    }
+    function drawCircle () {
+        c.save();
+        c.beginPath();
+        c.arc(0, 0, r - lw / 2, 0, Math.PI * 2, false);
+        c.strokeStyle = 'red';
+        c.lineWidth = lw;
+        c.stroke();
+        c.closePath();
+        c.restore();
+    }
+</script>
+</body>
+</html>
